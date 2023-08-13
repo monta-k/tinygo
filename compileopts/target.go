@@ -297,7 +297,6 @@ func defaultTarget(goos, goarch, triple string) (*TargetSpec, error) {
 		GOOS:             goos,
 		GOARCH:           goarch,
 		BuildTags:        []string{goos, goarch},
-		GC:               "precise",
 		Scheduler:        "tasks",
 		Linker:           "cc",
 		DefaultStackSize: 1024 * 64, // 64kB
@@ -346,6 +345,7 @@ func defaultTarget(goos, goarch, triple string) (*TargetSpec, error) {
 		)
 	}
 	if goos == "darwin" {
+		spec.GC = "precise"
 		spec.Linker = "ld.lld"
 		spec.Libc = "darwin-libSystem"
 		arch := strings.Split(triple, "-")[0]
@@ -357,6 +357,7 @@ func defaultTarget(goos, goarch, triple string) (*TargetSpec, error) {
 			"-platform_version", "macos", platformVersion, platformVersion,
 		)
 	} else if goos == "linux" {
+		spec.GC = "boehm"
 		spec.Linker = "ld.lld"
 		spec.RTLib = "compiler-rt"
 		spec.Libc = "musl"
@@ -375,7 +376,10 @@ func defaultTarget(goos, goarch, triple string) (*TargetSpec, error) {
 			// proper threading.
 			spec.CFlags = append(spec.CFlags, "-mno-outline-atomics")
 		}
+		spec.ExtraFiles = append(spec.ExtraFiles,
+			"src/runtime/gc_boehm.c")
 	} else if goos == "windows" {
+		spec.GC = "precise"
 		spec.Linker = "ld.lld"
 		spec.Libc = "mingw-w64"
 		// Note: using a medium code model, low image base and no ASLR

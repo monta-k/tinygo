@@ -356,6 +356,7 @@ func defaultTarget(goos, goarch, triple string) (*TargetSpec, error) {
 			"-arch", arch,
 			"-platform_version", "macos", platformVersion, platformVersion,
 		)
+		spec.ExtraFiles = append(spec.ExtraFiles, "src/runtime/signal.c")
 	} else if goos == "linux" {
 		spec.Linker = "ld.lld"
 		spec.RTLib = "compiler-rt"
@@ -375,6 +376,7 @@ func defaultTarget(goos, goarch, triple string) (*TargetSpec, error) {
 			// proper threading.
 			spec.CFlags = append(spec.CFlags, "-mno-outline-atomics")
 		}
+		spec.ExtraFiles = append(spec.ExtraFiles, "src/runtime/signal.c")
 	} else if goos == "windows" {
 		spec.Linker = "ld.lld"
 		spec.Libc = "mingw-w64"

@@ -124,6 +124,7 @@ var Musl = Library{
 			"malloc/mallocng/*.c",
 			"mman/*.c",
 			"math/*.c",
+			"signal/" + arch + "/*.s",
 			"signal/*.c",
 			"stdio/*.c",
 			"string/*.c",

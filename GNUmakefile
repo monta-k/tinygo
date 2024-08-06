@@ -962,4 +962,4 @@ lint:
 .PHONY: spell
 spell:
 	# Check for typos in comments. Skip git submodules etc.
-	go run github.com/client9/misspell/cmd/misspell -i 'ackward,devided,extint,programmmer,rela' $$( find . -depth 1 -type d  | egrep -w -v 'lib|llvm|src/net' )
+	go run github.com/client9/misspell/cmd/misspell -i 'ackward,devided,extint,rela' $$( find . -depth 1 -type d  | egrep -w -v 'lib|llvm|src/net' )

@@ -959,7 +959,13 @@ lint:
 	# Use 'grep .' to get rid of stray blank line
 	go run github.com/mgechev/revive -config revive.toml compiler/... src/{os,reflect}/*.go | grep -v "should have comment or be unexported" | grep '.' | awk '{print}; END {exit NR>0}'
 
+SPELLDIRSCMD=find . -depth 1 -type d  | egrep -wv '.git|lib|llvm|src'; find src -depth 1 | egrep -wv 'net|internal'; find src/internal -depth 1 -type d | egrep -wv src/internal/wasi
 .PHONY: spell
-spell:
-	# Check for typos in comments. Skip git submodules etc.
-	go run github.com/client9/misspell/cmd/misspell -i 'ackward,devided,extint,rela' $$( find . -depth 1 -type d  | egrep -w -v 'lib|llvm|src/net' )
+spell: ## Check for typos in strings and comments.  Skip git submodules etc.
+	# Original repo for misspell was github.com/client9/misspell
+	# Most up to date repo seems to be github.com/golangci/misspell
+	go run github.com/golangci/misspell/cmd/misspell --dict misspell.csv -i 'ackward,devided,extint,rela' $$( $(SPELLDIRSCMD) )
+
+.PHONY: spellfix
+spellfix: ## Fix typos in strings and comments.
+	go run github.com/golangci/misspell/cmd/misspell -w --dict misspell.csv -i 'ackward,devided,extint,rela' $$( $(SPELLDIRSCMD) )
